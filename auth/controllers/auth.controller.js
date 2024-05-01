@@ -26,4 +26,32 @@ const signup = async (req, res) => {
 	}
 };
 
+export const login = async (req, res) => {
+	try {
+		const { username, password } = req.body;
+		const user = await User.findOne({ username });
+		if (!user) {
+			return res.status(401).json({ message: 'Invalid Credentials' });
+		}
+
+		const matchPassword = await bcrypt.compare(password, user?.password);
+
+		if (!matchPassword) {
+			return res.status(401).json({
+				message: 'Invalid Credentials'
+			});
+		} else {
+			generateJWTTokenAndSetCookie(user._id, res);
+			res.status(201).json({
+				message: 'User registered successfully',
+				_id: user._id,
+				username: user.username
+			});
+		}
+	} catch (error) {
+		console.log(error);
+		res.status(500).json({ message: 'Login Failed' });
+	}
+};
+
 export default signup;
