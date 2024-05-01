@@ -1,9 +1,11 @@
 'use client'
 
 import axios from 'axios';
+import { useRouter } from 'next/navigation';
 import React, { useState } from 'react'
 
 const Auth = () => {
+  const router = useRouter();
   const [username, setUsername] = useState('');
   const [password, setPassword] = useState('');
 
@@ -22,7 +24,7 @@ const Auth = () => {
       if (res.data.message === "Username already exists") {
         alert('Username already exists')
       } else {
-        alert('User registered')
+        router.push('/chat')
       }
     } catch (error) {
       console.log("Error in signup function ", error.message);
@@ -44,7 +46,7 @@ const Auth = () => {
       if (res.data.message === "Invalid Credentials") {
         alert('Invalid Credentials')
       } else {
-        alert('User Logged In Successfully')
+        router.push('/chat')
       }
     } catch (error) {
       console.log("Error in Logging function ", error.message)

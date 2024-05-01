@@ -4,11 +4,9 @@ import io from "socket.io-client";
 
 const Chat = () => {
 
-
   const [msgs, setMsgs] = useState([]);
   const [msg, setMsg] = useState('');
   const [socket, setSocket] = useState(null);
-
 
   useEffect(() => {
        // Establish WebSocket connection
@@ -65,7 +63,4 @@ return (
 )
 }
 
-
-
-
-export default Chat
+export default Chat;
