@@ -10,7 +10,11 @@ const Chat = () => {
 
   useEffect(() => {
        // Establish WebSocket connection
-      const newSocket = io('http://localhost:8000');
+      const newSocket = io('http://localhost:8000', {
+        query: {
+            username: "cherry"
+        }
+      });
       setSocket(newSocket);
 
 
@@ -28,8 +32,14 @@ const Chat = () => {
 
   const sendMsg = (e) => {
       e.preventDefault();
+      const msgToBeSent = {
+        textMsg: msg,
+        sender: "cherry",
+        receiver: "sunny"
+      }
+
       if(socket) {
-          socket.emit('chat msg', msg);
+          socket.emit('chat msg', msgToBeSent);
           setMsgs(prevMsgs => [...prevMsgs, { text: msg, sentByCurrUser: true }]);
           setMsg('');
       }
