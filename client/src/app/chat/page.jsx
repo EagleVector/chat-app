@@ -3,6 +3,7 @@ import React, {useState, useEffect} from 'react';
 import io from "socket.io-client";
 import { useAuthStore } from '../zustand/useAuthStore';
 import { useUsersStore } from '../zustand/useUsersStore';
+import { useChatReceiverStore } from '../zustand/useChatReceiverStore';
 import axios from 'axios';
 import ChatUsers from '../_components/ChatUsers';
 
@@ -13,6 +14,7 @@ const Chat = () => {
   const [socket, setSocket] = useState(null);
   const { authName, updateAuthName } = useAuthStore();
   const { users, updateUsers } = useUsersStore();
+  const { chatReceiver, updateChatReceiver } = useChatReceiverStore();
 
   const getUserData = async () => {
         const res = await axios.get('http://localhost:5001/users', 
@@ -51,7 +53,7 @@ const Chat = () => {
       const msgToBeSent = {
         text: msg,
         sender: authName,
-        receiver: "sunny"
+        receiver: chatReceiver
       }
 
       if(socket) {
@@ -66,6 +68,11 @@ return (
             <ChatUsers />
         </div>
         <div className='w-4/5 flex flex-col'>
+            <div className='1/5'>
+                <h1>
+                    {authName} is chatting with {chatReceiver}
+                </h1>
+            </div>
             <div className='msgs-container h-4/5 overflow-scroll'>
                 {msgs.map((msg, index) => (
                     <div key={index} className={`m-5 ${msg.sentByCurrUser ? 'text-right' : 'text-left'}`}>
