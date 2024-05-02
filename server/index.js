@@ -21,14 +21,26 @@ const io = new Server(server, {
 
 // Allow WebSocket connections from different origins to the Socket.IO server by relaxing the browser's same-origin policy
 
-io.on('connection', socket => {
+const userSocketMap = {};
+
+io.on('connection', (socket) => {
 	console.log('Client connected');
+
 	const username = socket.handshake.query.username;
-	console.log('Username: ', username);
-	socket.on('chat msg', msg => {
+	console.log('Username of connected client: ', username);
+
+	userSocketMap[username] = socket;
+
+	socket.on('chat msg', (msg) => {
 		console.log(msg.sender);
 		console.log(msg.receiver);
-		console.log(msg.textMsg);
+		console.log(msg.text);
+		console.log(msg);
+		const receiverSocket = userSocketMap[msg.receiver];
+
+		if(receiverSocket) {
+			receiverSocket.emit('chat msg', msg);
+		}
 	});
 });
 

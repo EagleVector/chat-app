@@ -1,18 +1,29 @@
 'use client'
 import React, {useState, useEffect} from 'react';
 import io from "socket.io-client";
+import { useAuthStore } from '../zustand/useAuthStore';
+import axios from 'axios';
 
 const Chat = () => {
 
   const [msgs, setMsgs] = useState([]);
   const [msg, setMsg] = useState('');
   const [socket, setSocket] = useState(null);
+  const { authName, updateAuthName } = useAuthStore();
+
+  const getUserData = async () => {
+        const res = await axios.get('http://localhost:5001/users', 
+            {
+                withCredentials: true
+            })
+        console.log(res.data);
+      }
 
   useEffect(() => {
        // Establish WebSocket connection
       const newSocket = io('http://localhost:8000', {
         query: {
-            username: "cherry"
+            username: authName
         }
       });
       setSocket(newSocket);
@@ -20,10 +31,11 @@ const Chat = () => {
 
       // Listen for incoming msgs
       newSocket.on('chat msg', msg => {
-          console.log('received msg on client ' + msg);
-          setMsgs(prevMsgs => [...prevMsgs, {text: msg, sentByCurrUser: false }]);
+          console.log('received msg on client ' + msg.text);
+          setMsgs(prevMsgs => [...prevMsgs, {text: msg.text, sentByCurrUser: false }]);
       });
 
+      getUserData();
 
       // Clean up function
       return () => newSocket.close();
@@ -33,8 +45,8 @@ const Chat = () => {
   const sendMsg = (e) => {
       e.preventDefault();
       const msgToBeSent = {
-        textMsg: msg,
-        sender: "cherry",
+        text: msg,
+        sender: authName,
         receiver: "sunny"
       }
 
