@@ -1,15 +1,45 @@
-import React from 'react'
-import { useUsersStore } from '../zustand/useUsersStore'
+import React, { useEffect } from 'react';
+import { useAuthStore } from '../zustand/useAuthStore';
+import { useUsersStore } from '../zustand/useUsersStore';
 import { useChatReceiverStore } from '../zustand/useChatReceiverStore';
+import { useChatMsgsStore } from '../zustand/useChatMsgsStore';
+import axios from 'axios';
 
 const ChatUsers = () => {
   
+  const { authName } = useAuthStore();
   const { users } = useUsersStore();
-  const { updateChatReceiver } = useChatReceiverStore();
+  const { chatReceiver, updateChatReceiver } = useChatReceiverStore();
+  const { chatMsgs, updateChatMsgs } = useChatMsgsStore();
 
   const setChatReceiver = (user) => {
     updateChatReceiver(user.username);
   }
+
+  useEffect(() => {
+    const getMsgs = async () => {
+      const res = await axios.get('http://localhost:8000/msgs', 
+        {
+          params: {
+            'sender': authName,
+            'receiver': chatReceiver
+          }
+        }, 
+        {
+          withCredentials: true
+        });
+      
+      if (res.data.length !== 0) {
+        updateChatMsgs(res.data);
+      } else {
+        updateChatMsgs([]);
+      }
+    }
+
+    if (chatReceiver) {
+      getMsgs();
+    }
+  }, [chatMsgs, chatReceiver])
 
   return (
     <div>
@@ -18,7 +48,7 @@ const ChatUsers = () => {
           className='bg-slate-400 rounded-xl m-3 p-5' 
           key={index}
           onClick={() => setChatReceiver(user)}>
-          {user.username}
+          { user.username }
         </div>
       ))}
     </div>

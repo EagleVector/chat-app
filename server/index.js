@@ -5,6 +5,7 @@ import dotenv from 'dotenv';
 import connectToMongoDB from './db/connectToMongoDB.js';
 import { addMsgToConversation } from './controllers/msgs.controller.js';
 import msgsRouter from './routes/msgs.route.js';
+import cors from 'cors'
 
 // dotenv library loads environment variables from .env file into process.env
 
@@ -14,6 +15,7 @@ const PORT = process.env.PORT || 8000;
 
 const app = express();
 
+app.use(cors());
 app.use('/msgs', msgsRouter);
 
 const server = http.createServer(app);
