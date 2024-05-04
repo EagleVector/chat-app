@@ -32,7 +32,7 @@ export const getMsgsForConversation = async (req, res) => {
 		});
 
 		if (!conversation) {
-			console.log(`Conversation not found between ${sender} and ${receiver}`);
+			// console.log(`Conversation not found between ${sender} and ${receiver}`);
 			return res.status(200).send();
 		}
 

@@ -29,7 +29,7 @@ const Chat = () => {
 
   useEffect(() => {
        // Establish WebSocket connection
-      const newSocket = io('http://localhost:8000', {
+      const newSocket = io('http://localhost:8001', {
         query: {
             username: authName
         }
