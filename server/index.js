@@ -6,6 +6,7 @@ import connectToMongoDB from './db/connectToMongoDB.js';
 import { addMsgToConversation } from './controllers/msgs.controller.js';
 import msgsRouter from './routes/msgs.route.js';
 import cors from 'cors'
+import { publish, subscribe } from './redis/msgsPubSub.js'
 
 // dotenv library loads environment variables from .env file into process.env
 
@@ -39,6 +40,12 @@ io.on('connection', socket => {
 
 	userSocketMap[username] = socket;
 
+	const channelName = `chat_${username}`;
+	subscribe(channelName, (msg) => {
+		console.log('Received message ', msg);
+		socket.emit("chat msg", JSON.parse(msg));
+	})
+
 	socket.on('chat msg', msg => {
 		console.log(msg.sender);
 		console.log(msg.receiver);
@@ -48,6 +55,9 @@ io.on('connection', socket => {
 
 		if (receiverSocket) {
 			receiverSocket.emit('chat msg', msg);
+		} else {
+			const channelName = `chat_${msg.receiver}`
+			publish(channelName, JSON.stringify(msg));
 		}
 		addMsgToConversation([msg.sender, msg.receiver], {
 			text: msg.text,
