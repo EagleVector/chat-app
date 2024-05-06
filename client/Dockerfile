@@ -1,5 +1,5 @@
 # Using the latest node.js image as base image
-FROM node:latest
+FROM --platform=linux/arm64 node:lts-alpine3.19
 
 # Set the working directory inside the container
 WORKDIR /app

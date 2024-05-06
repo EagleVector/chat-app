@@ -3,39 +3,44 @@ version: '3.8'
 
 services:
  server:
-   build:
+    image: eaglevector/chat-server1:lts
+    build:
      context: ./server # Path to the backend Dockerfile
-   ports:
+    ports:
      - "8000:8000"
 
 
  server2:
-   build:
+    image: eaglevector/chat-server2:lts
+    build:
      context: ./server # Path to the backend Dockerfile
-   ports:
+    ports:
      - "8001:8000"
 
 
  auth:
-   build:
+    image: eaglevector/auth-server
+    build:
      context: ./auth # Path to the backend Dockerfile
-   ports:
+    ports:
      - "5001:5001" 
 
 
  client1:
-   build:
+    image: eaglevector/chat-client1
+    build:
      context: ./client # Path to the frontend Dockerfile
-   ports:
+    ports:
      - "3000:3000"
-   depends_on:
+    depends_on:
      - server # Wait for backend service to be ready before starting frontend
 
 
  client2:
-   build:
+    image: eaglevector/chat-client2
+    build:
      context: ./client_2 # Path to the frontend Dockerfile
-   ports:
+    ports:
      - "3001:3000"
-   depends_on:
+    depends_on:
      - server2 # Wait for backend service to be ready before starting frontend
