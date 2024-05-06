@@ -3,7 +3,7 @@ version: '3.8'
 
 services:
  server:
-    image: eaglevector/chat-server1:lts
+    image: eaglevector/chat-server1:latest
     build:
      context: ./server # Path to the backend Dockerfile
     ports:
@@ -19,7 +19,7 @@ services:
 
 
  auth:
-    image: eaglevector/auth-server
+    image: eaglevector/auth-server:lts
     build:
      context: ./auth # Path to the backend Dockerfile
     ports:
@@ -27,7 +27,7 @@ services:
 
 
  client1:
-    image: eaglevector/chat-client1
+    image: eaglevector/chat-client1:lts
     build:
      context: ./client # Path to the frontend Dockerfile
     ports:
@@ -37,7 +37,7 @@ services:
 
 
  client2:
-    image: eaglevector/chat-client2
+    image: eaglevector/chat-client2:lts
     build:
      context: ./client_2 # Path to the frontend Dockerfile
     ports:
